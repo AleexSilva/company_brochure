@@ -52,3 +52,5 @@ class Website:
             self.text = ""
         links = [links.get('href') for links in soup.find_all('a')]
         self.links = [link for link in links if link]
+    def get_contents(self):
+        return f"Webpage Title:\n{self.title}\nWebpage Contents:\n{self.text}\n\n"        
