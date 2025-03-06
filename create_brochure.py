@@ -127,3 +127,5 @@ def create_brochure(company_name, url):
     )
     result = response.choices[0].message.content
     display(Markdown(result))
+    
+#create_brochure("HuggingFace", "https://huggingface.co")
