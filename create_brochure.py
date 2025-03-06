@@ -90,3 +90,21 @@ def get_links(url):
     )
     result = response.choices[0].message.content
     return json.loads(result)
+
+
+def get_all_details(url):
+    result = "Landing page:\n"
+    result += Website(url).get_contents()
+    links = get_links(url)
+    print("Found links:", links)
+    for link in links["links"]:
+        result += f"\n\n{link['type']}\n"
+        result += Website(link["url"]).get_contents()
+    return result
+
+
+# New system prompt
+
+system_prompt = "You are an assistant that analyzes the contents of several relevant pages from a company website \
+and creates a short brochure about the company for prospective customers, investors and recruits. Respond in markdown.\
+Include details of company culture, customers and careers/jobs if you have the information."
