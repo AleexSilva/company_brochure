@@ -53,6 +53,7 @@ class Website:
         links = [links.get('href') for links in soup.find_all('a')]
         self.links = [link for link in links if link]
     def get_contents(self):
+        logger.info('get_contents called')
         return f"Webpage Title:\n{self.title}\nWebpage Contents:\n{self.text}\n\n"        
 
 # Sytem Prompt contruction
@@ -89,6 +90,7 @@ def get_links(url):
         response_format={"type": "json_object"}
     )
     result = response.choices[0].message.content
+    logger.info('Get link function executed')
     return json.loads(result)
 
 
@@ -96,7 +98,7 @@ def get_all_details(url):
     result = "Landing page:\n"
     result += Website(url).get_contents()
     links = get_links(url)
-    print("Found links:", links)
+    logger.info("Found links:", links)
     for link in links["links"]:
         result += f"\n\n{link['type']}\n"
         result += Website(link["url"]).get_contents()
@@ -126,6 +128,7 @@ def create_brochure(company_name, url):
           ],
     )
     result = response.choices[0].message.content
+    logger.info('create_brochure executed')
     display(Markdown(result))
     
 #create_brochure("HuggingFace", "https://huggingface.co")
