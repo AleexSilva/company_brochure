@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from IPython.display import Markdown, display, update_display
 from openai import OpenAI
 from logger import logger
+import gradio as gr
 
 # Initialize and constants
 
@@ -140,30 +141,57 @@ def get_brochure_user_prompt(company_name, url):
 def stream_gpt(prompt):
     messages = [
         {"role": "system", "content": system_prompt},
-        {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
+        {"role": "user", "content": prompt}
       ]
     stream = openai.chat.completions.create(
         model='gpt-4o-mini',
         messages=messages,
         stream=True
     )
+    logger.info('Stream GPT has been executed')
     result = ""
     for chunk in stream:
         result += chunk.choices[0].delta.content or ""
         yield result
+    
 
 
 def stream_ollama(prompt):
-    conversation = f"{system_prompt}\nUser: {prompt}\nAssistant:"
+    conversation = f"{system_prompt}\nUser: {prompt}"
     stream = ollama.completions.create(
         model=MODEL_OLLAMA,
         prompt=conversation,
         stream=True
     )
     result = ""
+    logger.info('Stream Ollama has been executed')
     for chunk in stream:
         result += chunk.choices[0].text
         yield result
+
+
+def stream_brochure(company_name, url, model):
+    prompt = f"Please generate a company brochure for {company_name}. Here is their landing page:\n"
+    prompt += get_brochure_user_prompt(company_name, url)
+    if model=="GPT":
+        result = stream_gpt(prompt)
+    elif model=="Claude":
+        result = stream_ollama(prompt)
+    else:
+        raise ValueError("Unknown model")
+        logger.error('Unknown model')
+    yield from result
+    
+view = gr.Interface(
+    fn=stream_brochure,
+    inputs=[
+        gr.Textbox(label="Company name:"),
+        gr.Textbox(label="Landing page URL including http:// or https://"),
+        gr.Dropdown(["GPT", "Ollama"], label="Select model")],
+    outputs=[gr.Markdown(label="Brochure:")],
+    flagging_mode="never"
+)
+view.launch()
 
 #create_brochure("HuggingFace", "https://huggingface.co")
 
