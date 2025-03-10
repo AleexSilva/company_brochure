@@ -21,8 +21,13 @@ else:
     logger.error("There might be a problem with your API key? Please visit the troubleshooting notebook!")
 
 
-MODEL = 'gpt-4o-mini'
 openai = OpenAI(api_key = api_key)
+ollama = OpenAI(base_url='http://localhost:11434/v1', api_key='ollama')
+
+MODEL_OLLAMA = 'llama3.2'
+
+MODEL = 'gpt-4o-mini'
+
 
 # Some websites need you to use proper headers when fetching them:
 headers = {
@@ -54,7 +59,7 @@ class Website:
         self.links = [link for link in links if link]
     def get_contents(self):
         logger.info('get_contents called')
-        return f"Webpage Title:\n{self.title}\nWebpage Contents:\n{self.text}\n\n"        
+        return f"Webpage Title:\n{self.title}\nWebpage Contents:\n{self.text}\n\n"      
 
 # Sytem Prompt contruction
 link_system_prompt = "You are provided with a list of links found on a webpage. \
@@ -119,16 +124,46 @@ def get_brochure_user_prompt(company_name, url):
     user_prompt = user_prompt[:5_000] # Truncate if more than 5,000 characters
     return user_prompt
 
-def create_brochure(company_name, url):
-    response = openai.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
-          ],
-    )
-    result = response.choices[0].message.content
-    logger.info('create_brochure executed')
-    display(Markdown(result))
+# def create_brochure(company_name, url):
+#     response = openai.chat.completions.create(
+#         model=MODEL,
+#         messages=[
+#             {"role": "system", "content": system_prompt},
+#             {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
+#           ],
+#     )
+#     result = response.choices[0].message.content
+#     logger.info('create_brochure executed')
+#     display(Markdown(result))
     
+
+def stream_gpt(prompt):
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
+      ]
+    stream = openai.chat.completions.create(
+        model='gpt-4o-mini',
+        messages=messages,
+        stream=True
+    )
+    result = ""
+    for chunk in stream:
+        result += chunk.choices[0].delta.content or ""
+        yield result
+
+
+def stream_ollama(prompt):
+    conversation = f"{system_prompt}\nUser: {prompt}\nAssistant:"
+    stream = ollama.completions.create(
+        model=MODEL_OLLAMA,
+        prompt=conversation,
+        stream=True
+    )
+    result = ""
+    for chunk in stream:
+        result += chunk.choices[0].text
+        yield result
+
 #create_brochure("HuggingFace", "https://huggingface.co")
+
