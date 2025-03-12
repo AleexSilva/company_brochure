@@ -124,18 +124,6 @@ def get_brochure_user_prompt(company_name, url):
     user_prompt = user_prompt[:5_000] # Truncate if more than 5,000 characters
     return user_prompt
 
-# def create_brochure(company_name, url):
-#     response = openai.chat.completions.create(
-#         model=MODEL,
-#         messages=[
-#             {"role": "system", "content": system_prompt},
-#             {"role": "user", "content": get_brochure_user_prompt(company_name, url)}
-#           ],
-#     )
-#     result = response.choices[0].message.content
-#     logger.info('create_brochure executed')
-#     display(Markdown(result))
-    
 
 def stream_gpt(prompt):
     messages = [
@@ -191,6 +179,4 @@ view = gr.Interface(
     flagging_mode="never"
 )
 view.launch()
-
-#create_brochure("HuggingFace", "https://huggingface.co")
 
