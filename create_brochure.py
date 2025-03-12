@@ -1,8 +1,7 @@
-import os
+from decouple import config
 import requests
 import json
 from typing import List
-from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 from IPython.display import Markdown, display, update_display
 from openai import OpenAI
@@ -11,18 +10,18 @@ import gradio as gr
 
 # Initialize and constants
 
-load_dotenv(override=True)
-
-api_key = os.getenv("OPENAI_API_KEY")
+openai_api_key = config('OPENAI_API_KEY')
 
 # check the API key
-if api_key and api_key.startswith('sk-proj-') and len(api_key)>10:
-    logger.info("API key looks good so far")
+if openai_api_key:
+    logger.info(f"OpenAI API Key exists and begins {openai_api_key[:8]}")
 else:
-    logger.error("There might be a problem with your API key? Please visit the troubleshooting notebook!")
+    logger.error("OpenAI API Key not set")
+
+# Initialize OpenAI
 
 
-openai = OpenAI(api_key = api_key)
+openai = OpenAI(api_key = openai_api_key)
 ollama = OpenAI(base_url='http://localhost:11434/v1', api_key='ollama')
 
 MODEL_OLLAMA = 'llama3.2'
@@ -175,11 +174,11 @@ def stream_brochure(company_name, url, model):
     prompt += get_brochure_user_prompt(company_name, url)
     if model=="GPT":
         result = stream_gpt(prompt)
-    elif model=="Claude":
+    elif model=="Ollama":
         result = stream_ollama(prompt)
     else:
+        logger.info('Unknown model')
         raise ValueError("Unknown model")
-        logger.error('Unknown model')
     yield from result
     
 view = gr.Interface(
