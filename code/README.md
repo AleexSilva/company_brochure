@@ -82,4 +82,7 @@ pip install -r requirements.txt
 - requirements.txt: List of required Python libraries.
 - README.md: Project documentation.
 
+## 🤝 Contributing
+Contributions are welcome! Feel free to submit a pull request or open an issue if you find any bugs or have suggestions for improvements.
+
 
