@@ -14,10 +14,15 @@ Company Brochure Generator is a Python-based application that scrapes relevant c
 ## 📂 Project Structure
 
 company-brochure-generator/ 
+
 │── data/ # Folder for storing extracted website data (if applicable) 
+
 │── create_brochure.py # Main script to generate the company brochure 
+
 │── requirements.txt # List of required Python libraries 
+
 │── README.md # Project documentation 
+
 │── LICENSE # License information
 
 ## ⚙️ Installation
@@ -61,12 +66,12 @@ company-brochure-generator/
 
 Ensure you have the following Python libraries installed:
 
-- requests
-- beautifulsoup4
-- openai
-- gradio
-- python-decouple
-- IPython
+- `requests`
+- `beautifulsoup4`
+- `openai`
+- `gradio`
+- `python-decouple`
+- `IPython`
 
 Alternatively, install them using:
 
@@ -75,12 +80,12 @@ pip install -r requirements.txt
 ```
 
 ## 📄 Files
-- create_brochure.py: Main script that:
+- `create_brochure.py`: Main script that:
     - Scrapes relevant company website content
     - Extracts useful information (company overview, careers, etc.)
     - Generates a Markdown brochure using GPT-4o or Llama3.2
-- requirements.txt: List of required Python libraries.
-- README.md: Project documentation.
+- `requirements.txt`: List of required Python libraries.
+- `README.md`: Project documentation.
 
 ## 🤝 Contributing
 Contributions are welcome! Feel free to submit a pull request or open an issue if you find any bugs or have suggestions for improvements.
