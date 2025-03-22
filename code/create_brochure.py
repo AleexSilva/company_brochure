@@ -5,8 +5,10 @@ from typing import List
 from bs4 import BeautifulSoup
 from IPython.display import Markdown, display, update_display
 from openai import OpenAI
-from logger import logger
+from logger import Logger
 import gradio as gr
+
+logger = Logger("company_brochure")
 
 # Initialize and constants
 
