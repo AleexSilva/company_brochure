@@ -160,6 +160,19 @@ def stream_ollama(prompt):
 
 
 def stream_brochure(company_name, url, model):
+    """
+    Streams a brochure for the given company name and landing page URL using the
+    chosen model.
+
+    Args:
+        company_name (str): The name of the company.
+        url (str): The URL of the company's landing page.
+        model (str): The model to use, either "GPT" or "Ollama".
+
+    Yields:
+        str: The generated brochure, yielded as a stream of text.
+    """
+    
     prompt = f"Please generate a company brochure for {company_name}. Here is their landing page:\n"
     prompt += get_brochure_user_prompt(company_name, url)
     if model=="GPT":
